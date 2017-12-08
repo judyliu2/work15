@@ -1,0 +1,3 @@
+void create( int );
+void remove( );
+void view( );
