@@ -1,4 +1,4 @@
-union semun {
+union semun  {
                int              val;    /* Value for SETVAL */
                struct semid_ds *buf;    /* Buffer for IPC_STAT, IPC_SET */
                unsigned short  *array;  /* Array for GETALL, SETALL */
@@ -6,7 +6,8 @@ union semun {
                                            (Linux-specific) */
            };
 
-void create( int );
-void remove( );
-void view( );
+void create( union semun );
+void removeF();
+void readFile();
+void view();
 
