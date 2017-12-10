@@ -6,11 +6,10 @@
 #include <sys/shm.h>
 #include <string.h>
 #include <fcntl.h>
-#include "sem.h"
+#include <unistd.h>
 #define semKEY 11111
 #define memKEY 19192
-
-
+#include "sem.h"
 
 /*
 Will attempt to access the resources using the semaphore
@@ -22,7 +21,8 @@ Will attempt to access the resources using the semaphore
 int main(int argc, char* argv[]){
   //*Print last line of file through shared memory
   
-  if (!strcmp(argv[1], "-c") && argc == 3 ){
+  if (!strcmp(argv[1], "-c") && argc == 2){
+    create()
     
   }
   else if (!strcmp(argv[1], "-v")){
