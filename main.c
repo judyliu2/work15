@@ -19,19 +19,40 @@ Will attempt to access the resources using the semaphore
  */
 
 int main(int argc, char* argv[]){
-  //*Print last line of file through shared memory
   
-  if (!strcmp(argv[1], "-c") && argc == 2){
-    create()
-    
-  }
-  else if (!strcmp(argv[1], "-v")){
-    view();
-  }
-  else if (!strcmp(argv[1], "-r")){
-    removeF();
+  struct sembuf op;
+  op.sem_num = 0;
+  op.sem_op = -1;
+  op.sem_flg = SEM_UNDO;
+  int sid = semget(semKEY,1, 0644);
+  
+  printf("Semaphore: %d before access\n", sid);  
+  semop(sid, &op, 1 );  
+  printf("Semaphore: %d after access\n", sid);
+  
+  int fd = open("story", O_RDWR | O_APPEND | 0644);  
+  int shid = shmget(memKEY, 4, IPC_CREAT| IPC_EXCL | 0600);
+  int * size; //size of last line written
+  
+  printf("last line of story:\n");
+  if (shid == -1){
+    //look at last line of what was written
+    size = shmat(shid, 0 ,0);
   }
   else{
-    printf("Command not recognized. Please try again\n");
+    size = shmat(shid, 0 ,0);
   }
+
+  //taking user input
+  printf("contribute to the story:\n");
+  char input[512];
+  fgets(input, 512, stdin);
+
+  *size = strlen(input);
+  shmdt(size);
+
+  write(fd, input, strlen(input));
+  close(fd);
+  
+  
 }

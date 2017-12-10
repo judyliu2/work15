@@ -20,12 +20,12 @@
 void create(){
   int sid = 0;
   int shid = 0;
-  int * shm_ptr;
+ 
   int fd = 0;
   union semun semaUn;
   semaUn.val = 1;
   sid = semget(semKEY, 1, IPC_CREAT |IPC_EXCL| 0600);
-  shid = shmget( memKEY, 4, IPC_CREAT | IPC_EXCL | 0600);
+
   fd = open("story", O_CREAT | O_TRUNC | 0644);
  
   
@@ -42,9 +42,7 @@ void create(){
   semctl(sid, 0, SETVAL, semaUn.val);
   close(fd);
   
-  shm_ptr = shmat(shid, 0, 0); //shared mem = size of new last line written
-  write(fd, shm_ptr , sizeof(shm_ptr));
-
+ 
 }
 /*
   - Remove the shared memory, the semaphore and the story
@@ -53,15 +51,12 @@ void create(){
  */
 void removeF(){
   int sid = 0;
-  int shid = 0;
-  int * shm_ptr;
-  
-  
+ 
   sid = semget(semKEY, 1, 0);
   printf("Semaphore removed: %d\n", semctl(sid, 0, IPC_RMID));
   view();
-  shid = shmget(memKEY, 4, IPC_RMID); 
-  shmdt(shm_ptr);
+
+
   remove("story");
 }
 
@@ -91,7 +86,7 @@ void view(){
 }
 
 int main(int argc, char* argv[]){
-     
+  
   if (!strcmp(argv[1], "-c") && argc == 2 ){
    
     create();
