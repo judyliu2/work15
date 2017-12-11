@@ -1,13 +1,8 @@
 all: sem.c
-	@gcc -o tester sem.c
+	gcc -o control sem.c
+	gcc -o main main.c
 
 clean:
 	@rm *.o
 	@rm *~
 
-run: all
-	@./tester -c 4
-	@./tester -v
-	@./tester -c 3
-	@./tester -v
-	@./tester -r

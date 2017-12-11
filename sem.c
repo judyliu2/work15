@@ -24,7 +24,7 @@ void create(){
   int fd = 0;
   union semun semaUn;
   semaUn.val = 1;
-  sid = semget(semKEY, 1, IPC_CREAT| IPC_EXCL |  0777);
+  sid = semget(semKEY, 1, IPC_CREAT| IPC_EXCL | 0777);
   shid = shmget(memKEY, 4, IPC_CREAT| IPC_EXCL | 0600);
   fd = open("story", O_CREAT | O_TRUNC | 0777);
  
@@ -34,8 +34,6 @@ void create(){
     }
     else{
       semctl(sid, 0, SETVAL, semaUn.val);
-      
-      
       printf("Semaphore created: %d\n", sid);
       printf("Semaphore value: %d\n", semctl(sid, 0, GETVAL, semaUn));
       printf("Shared Memory created: %d\n", shid);
@@ -73,17 +71,19 @@ void removeF(){
 
 char* readFile(){
   
+  struct stat tistics;
+  stat("story", &tistics);
   int fd = open("story", O_RDONLY);
-  struct stat sb;
-  stat("story", &sb);
-  int size = sb.st_size;
- 
-  char * newbuff = calloc(1, size+1);
-  read(fd, newbuff, sizeof(newbuff));
+  int size = tistics.st_size;
+  char *s = calloc(1, size+1);
+  read(fd, s, size);
+  close(fd);
+  return s;
   
-  return newbuff;
-
+  
 }
+
+
 /*
   - Output the contents of the story file
   - This mode does not need to interact with the semaphore
