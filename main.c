@@ -25,7 +25,9 @@ int main(int argc, char* argv[]){
   op.sem_op = -1;
   op.sem_flg = SEM_UNDO;
   int sid = semget(semKEY,1, 0644);
-  
+
+  if(sid == -1) printf("please run compile and run sem.c with -c\n");
+  else{
   printf("Semaphore: %d before access\n", sid);  
   semop(sid, &op, 1 );  
   printf("Semaphore: %d after access\n", sid);
@@ -53,6 +55,7 @@ int main(int argc, char* argv[]){
 
   write(fd, input, strlen(input));
   close(fd);
+  }
   
   
 }

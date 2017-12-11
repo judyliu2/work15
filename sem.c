@@ -24,25 +24,25 @@ void create(){
   int fd = 0;
   union semun semaUn;
   semaUn.val = 1;
-  sid = semget(semKEY, 1, IPC_CREAT |IPC_EXCL| 0600);
-
-  fd = open("story", O_CREAT | O_TRUNC | 0644);
+  sid = semget(semKEY, 1, IPC_CREAT| IPC_EXCL |  0777);
+  shid = shmget(memKEY, 4, IPC_CREAT| IPC_EXCL | 0600);
+  fd = open("story", O_CREAT | O_TRUNC | 0777);
  
   
   if (sid == -1){
       printf("Semaphore already exists.\n");
     }
     else{
+      semctl(sid, 0, SETVAL, semaUn.val);
+      
       
       printf("Semaphore created: %d\n", sid);
-      printf("Semaphore value: %d\n", semctl(sid, 0, GETVAL));
+      printf("Semaphore value: %d\n", semctl(sid, 0, GETVAL, semaUn));
       printf("Shared Memory created: %d\n", shid);
       printf("File is created: %d\n", fd);
+      close(fd);
     }
-  semctl(sid, 0, SETVAL, semaUn.val);
-  close(fd);
   
- 
 }
 /*
   - Remove the shared memory, the semaphore and the story
@@ -50,13 +50,24 @@ void create(){
   - This should wait until the semaphore is available
  */
 void removeF(){
-  int sid = 0;
- 
-  sid = semget(semKEY, 1, 0);
-  printf("Semaphore removed: %d\n", semctl(sid, 0, IPC_RMID));
+  struct sembuf op;
+  op.sem_num = 0;
+  op.sem_op = -1;
+  op.sem_flg = SEM_UNDO;
+  
+  int sid = semget(semKEY, 1, 0);
+  int shid = shmget(memKEY, 0, 0);
+  printf("WAITING FOR SEMAPHORE\n");
+  semop(sid, &op,1);
+  printf("DONE WAITING, BYE BYE STUFF\n");
+
+  semctl(sid, 0, IPC_RMID);
+  printf("Semaphore removed: %d\n", sid);
+  shmctl(shid, IPC_RMID,0);
+  printf("Shared Mem removed: %d\n", shid);
   view();
-
-
+ 
+ 
   remove("story");
 }
 
