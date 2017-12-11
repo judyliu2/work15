@@ -15,7 +15,7 @@
 Will attempt to access the resources using the semaphore
   - once in, it should display the last line added to the file (use shared memory to contain the size of the last line)
   - prompt used for the next line
-  - one a new line is read, write to that file, update the sahred memory and then release the semaphore
+  - one a new line is read, write to that file, update the shared memory and then release the semaphore
  */
 
 int main(int argc, char* argv[]){
@@ -30,7 +30,7 @@ int main(int argc, char* argv[]){
   // printf("%d\n", sid);
   
    
-  if(sid == -1){ printf("please run compile and run sem.c with -c\n");}
+  if(sid == -1){ printf("please compile sem.c and run ./a.out with -c\n");}
   else{
     
 
